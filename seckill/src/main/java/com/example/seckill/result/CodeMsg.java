@@ -25,7 +25,11 @@ public class CodeMsg {
     public static CodeMsg BIND_ERROR = new CodeMsg(500100, "参数校验错误:%s");
     //login error 500200
 
-    //product error 500300
+    //seckill error 500300
+
+    public static CodeMsg SECKILL_OVER = new CodeMsg(500500, "库存不足");
+
+    public static CodeMsg REPEAT_SECKILL = new CodeMsg(500501, "不能重复秒杀");
 
     //........
 

@@ -24,9 +24,6 @@ import java.util.List;
 public class GoodsController {
 
     @Autowired
-    private SeckillUserService seckillUserService;
-
-    @Autowired
     private GoodsService goodsService;
 
     @RequestMapping("/to_list")
