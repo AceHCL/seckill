@@ -47,12 +47,14 @@
             <td>详情</td>
         </tr>
         <tr th:each="goods,goodsStat : ${goodsList}">
+            <!--/*@thymesVar id="goodsName" type=""*/-->
             <td th:text="${goods.goodsName}"></td>
             <td><img th:src="@{${goods.goodsImg}}" width="100" height="100"/></td>
             <td th:text="${goods.goodsPrice}"></td>
             <td th:text="${goods.seckillPrice}"></td>
             <td th:text="${goods.stockCount}"></td>
-            <td><a th:href="'/goods/to_detail/'+${goods.id}">详情</a></td>
+            <!--<td><a th:href="'/goods/to_detail/'+${goods.id}">详情</a></td>改造成前后分离的-->
+            <td><a th:href="'/goods_detail.htm?goodsId='+${goods.id}">详情</a></td>
         </tr>
     </table>
 </div>

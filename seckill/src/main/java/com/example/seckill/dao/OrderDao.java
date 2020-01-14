@@ -33,4 +33,7 @@ public interface OrderDao {
             "values(#{userId},#{orderId},#{goodsId})")
 //    @SelectKey(keyColumn = "id",keyProperty = "id",resultType = long.class,before = false,statement = "select last_insert_id()")
     long insertSeckillOrder(SeckillOrder seckillOrder);
+
+    @Select("select * from sk_order where id = #{orderId} and user_id = #{userId} ")
+    Order getOrderById(@Param("userId") long userId,@Param("orderId") long orderId);
 }

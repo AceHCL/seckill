@@ -33,7 +33,15 @@ public class SeckillUserService {
     public static final String COOKIE_NAME_TOKEN = "token";
 
     public SeckillUser getById(long id){
-        return seckillUserDao.getById(id);
+        SeckillUser user = redisService.get(SeckillUserKey.getById,""+id,SeckillUser.class);
+        if (user != null){
+            return user;
+        }
+        user = seckillUserDao.getById(id);
+        if (user != null){
+            redisService.set(SeckillUserKey.getById,""+id,user);
+        }
+        return user;
     }
 
     public boolean login(HttpServletResponse response,LoginVo loginVo){

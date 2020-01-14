@@ -1,6 +1,7 @@
 package com.example.seckill.controller;
 
 import com.example.seckill.domain.User;
+import com.example.seckill.rabbitmq.MQSender;
 import com.example.seckill.redis.KeyPrefix;
 import com.example.seckill.redis.RedisService;
 import com.example.seckill.redis.UserKey;
@@ -28,6 +29,9 @@ public class DemoController {
     UserService userService;
     @Autowired
     RedisService redisService;
+
+    @Autowired
+    MQSender mqSender;
 
     @RequestMapping("/")
     @ResponseBody
@@ -71,6 +75,13 @@ public class DemoController {
         user.setName("acehcl");
         boolean result = redisService.set(UserKey.getById,""+1,user);
         return Result.success(result);
+    }
+
+    @RequestMapping("/rabbit")
+    @ResponseBody
+    public String rabbit(){
+        mqSender.send("success");
+        return "successful";
     }
 
 }

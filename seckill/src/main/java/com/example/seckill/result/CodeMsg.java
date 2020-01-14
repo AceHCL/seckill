@@ -23,9 +23,16 @@ public class CodeMsg {
     public static CodeMsg MOBILE_NOT_EXIST = new CodeMsg(500100,"user not exist");
     public static CodeMsg PASSWORD_ERROR = new CodeMsg(500100, "password error");
     public static CodeMsg BIND_ERROR = new CodeMsg(500100, "参数校验错误:%s");
+    public static CodeMsg SESSION_ERROR = new CodeMsg(500100, "用户未登陆");
     //login error 500200
 
     //seckill error 500300
+
+    //order error
+
+    public static CodeMsg ORDER_ERROR = new CodeMsg(500300, "订单为空");
+    public static CodeMsg PROCUDT_ERROR = new CodeMsg(500300, "商品信息为空");
+
 
     public static CodeMsg SECKILL_OVER = new CodeMsg(500500, "库存不足");
 
