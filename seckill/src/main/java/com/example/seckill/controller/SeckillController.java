@@ -1,5 +1,6 @@
 package com.example.seckill.controller;
 
+import com.example.seckill.config.AccessLimit;
 import com.example.seckill.domain.Order;
 import com.example.seckill.domain.SeckillOrder;
 import com.example.seckill.domain.SeckillUser;
@@ -14,13 +15,16 @@ import com.example.seckill.service.OrderService;
 import com.example.seckill.service.SeckillService;
 import com.example.seckill.service.SeckillUserService;
 import com.example.seckill.vo.GoodsVo;
+import com.sun.tools.javac.jvm.Code;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 描述:
@@ -47,6 +51,8 @@ public class SeckillController implements InitializingBean {
     @Autowired
     private MQSender mqSender;
 
+    private Map<Long,Boolean> localOverMap = new HashMap<Long,Boolean>();
+
     /**
      * 初始化的操作
      * @throws Exception
@@ -61,8 +67,8 @@ public class SeckillController implements InitializingBean {
         for (GoodsVo goods:goodsVoList
              ) {
             redisService.set(GoodsKey.getGoodsStock,""+goods.getId(),goods.getStockCount());
+            localOverMap.put(goods.getId(),false);
         }
-
     }
 
     /**
@@ -110,6 +116,7 @@ public class SeckillController implements InitializingBean {
      * @return
      */
 
+    @AccessLimit(seconds=5,maxCount=5,needLogin=true)
     @RequestMapping(value = "/do_seckill",method = RequestMethod.POST)
     @ResponseBody
     public Result doSeckill(SeckillUser user,
@@ -117,11 +124,15 @@ public class SeckillController implements InitializingBean {
         if (user == null){
             return Result.error(CodeMsg.SESSION_ERROR);
         }
-        long stock = redisService.decr(GoodsKey.getGoodsStock,""+goodsId);
-        if (stock < 0){
+        if (localOverMap.get(goodsId)){
             return Result.error(CodeMsg.SECKILL_OVER);
         }
-//        判断是否已经秒杀
+        long stock = redisService.decr(GoodsKey.getGoodsStock,""+goodsId);
+        if (stock < 0){
+            localOverMap.put(goodsId,true);
+            return Result.error(CodeMsg.SECKILL_OVER);
+        }
+//      判断是否已经秒杀
         SeckillOrder seckillOrder = orderService.getSeckillOrderByUserIdAndGoodsId(user.getId(),goodsId);
         if (seckillOrder != null){
 

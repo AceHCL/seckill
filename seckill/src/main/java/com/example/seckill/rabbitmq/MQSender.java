@@ -30,7 +30,7 @@ public class MQSender {
     //入队
     public void sendSeckillMessage(SeckillMessage seckillMessage) {
         String msg = RedisService.beanToString(seckillMessage);
-        log.info("send message" + msg);
+//        log.info("send message" + msg);
         amqpTemplate.convertAndSend(MQConfig.SECKILL_QUEUE,msg);
 
     }

@@ -23,7 +23,7 @@ public class MQConfig {
      */
     @Bean
     public Queue queue(){
-        return new Queue(MQConfig.QUEUE,true);
+        return new Queue(MQConfig.SECKILL_QUEUE,true);
     }
 
 }

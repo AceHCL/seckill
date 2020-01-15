@@ -15,8 +15,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.example.seckill.rabbitmq.MQConfig.*;
-
 /**
  * 描述:
  *
@@ -37,7 +35,7 @@ public class MQReceiver {
 
     @RabbitListener(queues = MQConfig.SECKILL_QUEUE)
     public void receive(String message){
-        log.info("receive message");
+//        log.info("receive message");
         SeckillMessage seckillMessage = RedisService.stringToBean(message,SeckillMessage.class);
         SeckillUser user = seckillMessage.getUser();
         long goodsId = seckillMessage.getGoodsId();
@@ -54,7 +52,6 @@ public class MQReceiver {
         if (seckillOrder != null){
             return;
         }
-
         //开始秒杀，减库存，下订单，写入秒杀订单
         SeckillOrder order = seckillService.seckill(user,goods);
         return ;

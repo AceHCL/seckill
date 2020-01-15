@@ -48,9 +48,8 @@ public class SeckillService {
 
     public long getSeckillResult(Long userId, long goodsId) {
         SeckillOrder seckillOrder = orderService.getSeckillOrderByUserIdAndGoodsId(userId,goodsId);
-        if (seckillOrder != null){
-            return seckillOrder.getId();
-        }else{
+        //order is null
+        if (seckillOrder == null){
             boolean isOver = getGoodsOver(goodsId);
             if (isOver){
                 return SeckillService.FAILD;
@@ -58,6 +57,8 @@ public class SeckillService {
                 return SeckillService.WAIT;
             }
         }
+        //order is not null
+        return seckillOrder.getOrderId();
     }
 
     private void setGoodsOver(Long id) {

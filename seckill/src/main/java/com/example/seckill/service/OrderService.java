@@ -5,6 +5,7 @@ import com.example.seckill.domain.Order;
 import com.example.seckill.domain.SeckillOrder;
 import com.example.seckill.domain.SeckillUser;
 import com.example.seckill.redis.RedisService;
+import com.example.seckill.redis.SeckillOrderKey;
 import com.example.seckill.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,10 @@ public class OrderService {
     @Autowired
     private RedisService redisService;
 
+    //redis查询秒杀订单
     public SeckillOrder getSeckillOrderByUserIdAndGoodsId(Long userId, long goodsId) {
-        return orderDao.getSeckillOrderByUserIdAndGoodsId(userId,goodsId);
+        SeckillOrder seckillOrder = redisService.get(SeckillOrderKey.seckillOrderKey,""+userId+"_"+goodsId,SeckillOrder.class);
+        return seckillOrder;
     }
 
     @Transactional
@@ -50,6 +53,8 @@ public class OrderService {
         seckillOrder.setUserId(user.getId());
         orderDao.insertSeckillOrder(seckillOrder);
         //将订单写入redis
+        redisService.set(SeckillOrderKey.seckillOrderKey,""+user.getId()+"_"+goods.getId(),seckillOrder);
+
         return seckillOrder;
     }
 
